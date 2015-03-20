@@ -251,7 +251,7 @@ class Zlaganje:
 
     def plotToFile(self):
         self.width -= 5
-        print("self.width = %d" % self.width)
+        #print("self.width = %d" % self.width)
         filename = 'out/' + str(self.iteration) + '.txt';
         savetxt(filename, self.grid[5:,5:], fmt='%d')
         head = "800904\nZlaganje\n\n"+str(self.iteration)+"\n"+str(self.width) + " " + str(self.width) + "\n"
