@@ -82,9 +82,9 @@ class Zlaganje:
             f.write(line.rstrip('\r\n') + '\n' + content)
 
     def rec4num(self, rectangle, rec):
-        if rectangle//4 > 2:
-            rec.num += rectangle//4-2
-            rectangle -= (rectangle//4-2) * 4
+        if rectangle//4 > 1:
+            rec.num += rectangle//4-1
+            rectangle -= (rectangle//4-1) * 4
         return rectangle
 
     def bestPossiblePlaces(self, shape):
@@ -198,7 +198,7 @@ class Zlaganje:
         places = []
         placesLen = 0
         isComposed = shape.isComposed()
-        limit = 50 if isComposed else 100
+        limit = 5 if isComposed else 50
         for i in range(5, height):
             for j in range(5, width):
                 if not self.overlaps(i, j, shape, 0):
