@@ -74,6 +74,12 @@ class Zlaganje:
         self.allPossiblePlaces = 0#self.getAllPossiblePlaces()
         self.iteration = i
 
+    def line_prepender(self, filename, line):
+        with open(filename, 'r+') as f:
+            content = f.read()
+            f.seek(0, 0)
+            f.write(line.rstrip('\r\n') + '\n' + content)
+
     def rec4num(self, rectangle, rec):
         if rectangle//4 >= 2:
             rec.num += rectangle//4-1
@@ -85,17 +91,20 @@ class Zlaganje:
         if possible_places == []: return []
         perimeters = []
         minimum = (0, inf)
+        minimum1 = (0, inf)
         for i,j in enumerate(possible_places):
             self.placeShape(j[0], j[1], j[2], j[3], 1)
             perimeter = self.perimeter()
             if minimum[1] > perimeter:
                 minimum = (i, perimeter)
+            # elif minimum1[1] > perimeter and minimum[1] < perimeter:
+            #     minimum1 = (i, perimeter)
 
             self.removeShape(j[0], j[1], j[2], j[3])
 
         #sort by perimeter
         #perimeters = sorted(perimeters, key=lambda x: x[1])
-        return [possible_places[minimum[0]]]
+        return [possible_places[minimum[0]]] #, possible_places[minimum1[0]]]
         # return [possible_places[i[0]] for i in perimeters[:2]]
 
     #return array of arrays of all possible solutions
@@ -107,14 +116,14 @@ class Zlaganje:
     def solve(self, n=0, cnt=1):
         # while not self.recd():
         arr = [self.rec4rec, self.rec4L, self.rec4J, self.rec4K, self.rec4squ, \
-        self.rectangle, self.square, self.L, self.J, self.leftWing, self.rightWing, self.K]
+        self.rectangle, self.square, self.L, self.J,  self.K, self.leftWing, self.rightWing]
         while (not arr[n].empty()):
 
             places = self.bestPossiblePlaces(arr[n])
             if places == []:
                 return
 
-            #for j in range(len(places)):
+            #for j in range(2):
             i = places[0]
             self.placeShape(i[0], i[1], i[2], i[3], cnt)
             s = places.pop(0)
@@ -127,15 +136,14 @@ class Zlaganje:
 
         #self.plot()
         if self.solved():
-            print ("SOLVED")
             self.solutions.append(self.grid)
         else:
             return
-        print ("len = ", len(self.solutions))
-        if len(self.solutions) > 0:
+
+        #if len(self.solutions) > 0:
             #self.getBestSolution()
-            self.plotToFile()
-            raise Exception("first plot")
+        self.plotToFile()
+        raise Exception("first plot")
 
 
     def filterPossiblePlaces(self, arr):
@@ -188,6 +196,8 @@ class Zlaganje:
         height = min(self.cur_height, self.width-5)
         places = []
         placesLen = 0
+        isComposed = shape.isComposed()
+        limit = 30 if isComposed else 500
         for i in range(5, height):
             for j in range(5, width):
                 if not self.overlaps(i, j, shape, 0):
@@ -203,7 +213,7 @@ class Zlaganje:
                     places.append([i,j,shape,3])
                     placesLen += 1
 
-            if placesLen > 20:
+            if placesLen > limit:
                 return places
 
         return places
@@ -239,12 +249,10 @@ class Zlaganje:
             print(grid[i][5:])
 
     def plotToFile(self):
-        #head = "800904\nZlaganje\n\n"+str(self.iteration)+"\n"+str(self.width) + " " + str(self.width) + "\n"
-        savetxt('out.txt', self.grid[5:,5:], fmt='%d')# header=head)
-        print(self.width)
-        #f1 = open('out/plot'+ str(self.iteration) +'.txt', 'w+')
-        #f2 = open('tmp', 'r+')
-        #print(head, file=f1)
+        filename = 'out/' + str(self.iteration) + '.txt';
+        savetxt(filename, self.grid[5:,5:], fmt='%4d')
+        head = "800904\nZlaganje\n\n"+str(self.iteration)+"\n"+str(self.width) + " " + str(self.width) + "\n"
+        self.line_prepender(filename, head)
 
     def overlaps(self, i, j, shape, orientation):
         o = self.shapeOrientation(shape, orientation)
