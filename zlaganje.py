@@ -73,6 +73,7 @@ class Zlaganje:
         self.width = shapes
         self.allPossiblePlaces = 0#self.getAllPossiblePlaces()
         self.iteration = i
+        print("self.width = %d" % self.width)
 
     def line_prepender(self, filename, line):
         with open(filename, 'r+') as f:
@@ -249,8 +250,10 @@ class Zlaganje:
             print(grid[i][5:])
 
     def plotToFile(self):
+        self.width -= 5
+        print("self.width = %d" % self.width)
         filename = 'out/' + str(self.iteration) + '.txt';
-        savetxt(filename, self.grid[5:,5:], fmt='%4d')
+        savetxt(filename, self.grid[5:,5:], fmt='%d')
         head = "800904\nZlaganje\n\n"+str(self.iteration)+"\n"+str(self.width) + " " + str(self.width) + "\n"
         self.line_prepender(filename, head)
 
