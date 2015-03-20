@@ -42,7 +42,7 @@ class Zlaganje:
     rec4squ = 0
     iteration = 0
     def __init__(self, rectangle, L=0, J=0, leftWing=0, rightWing=0, K=0, square=0, i=0):
-        shapes = int(sqrt(rectangle*4 + L*4 + J*4 + leftWing*4 + rightWing*4 + K*4 + square*4)) + 15
+        shapes = int(sqrt(rectangle*4 + L*4 + J*4 + leftWing*4 + rightWing*4 + K*4 + square*4)) + 10
         self.rec4rec = CRec4(0)
         self.rec4L = CRec4L(0)
         self.rec4J = CRec4J(0)
@@ -82,9 +82,9 @@ class Zlaganje:
             f.write(line.rstrip('\r\n') + '\n' + content)
 
     def rec4num(self, rectangle, rec):
-        if rectangle//4 >= 2:
-            rec.num += rectangle//4-1
-            rectangle -= (rectangle//4-1) * 4
+        if rectangle//4 > 2:
+            rec.num += rectangle//4-2
+            rectangle -= (rectangle//4-2) * 4
         return rectangle
 
     def bestPossiblePlaces(self, shape):
@@ -198,7 +198,7 @@ class Zlaganje:
         places = []
         placesLen = 0
         isComposed = shape.isComposed()
-        limit = 30 if isComposed else 500
+        limit = 50 if isComposed else 100
         for i in range(5, height):
             for j in range(5, width):
                 if not self.overlaps(i, j, shape, 0):
@@ -256,6 +256,7 @@ class Zlaganje:
         savetxt(filename, self.grid[5:,5:], fmt='%d')
         head = "800904\nZlaganje\n\n"+str(self.iteration)+"\n"+str(self.width) + " " + str(self.width) + "\n"
         self.line_prepender(filename, head)
+        self.width += 5
 
     def overlaps(self, i, j, shape, orientation):
         o = self.shapeOrientation(shape, orientation)
